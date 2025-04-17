@@ -1,2 +1,2 @@
 # tung
-Simple, Fast and Lightweight music downloader command line
+Simple, Fast and Lightweight command line tool to perform DoS attacks

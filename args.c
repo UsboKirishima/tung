@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "args.h"
 
@@ -30,6 +31,18 @@ struct ttts_cmd_arg_dict_item *args_dict_init() {
 
 	return NULL;
 }
+
+/* This function exctract the value of a 
+ * specified argument from the command buffer */
+char *extract_arg_value(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
+	
+	for(int arg_i = 0; arg_i <= argc; arg_i++) {
+		if(strcmp(argv[arg_i], arg_tf.short_flag) == 0 || strcmp(argv[arg_i], arg_tf.long_flag) == 0)
+			return argv[arg_i + 1];
+	}
+
+	return NULL;
+}	
 
 void ttts_load_args(struct ttts_cmd_arg_dict_item *args) {
 

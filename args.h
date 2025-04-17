@@ -7,7 +7,6 @@
 #define MAX_ARGS_NUM 4
 #define DICT_EX_ARG 0
 
-/* Structure representing a command-line argument */
 struct ttts_cmd_arg {
     char short_flag[3];         /* Short option like "-h" */
     const char *long_flag;      /* Long option like "--help" */
@@ -22,19 +21,18 @@ struct ttts_cmd_arg {
     bool is_repeatable;         /* Can this option be used multiple times? */
 };
 
-/* Structure representing an item in the argument dictionary */
 struct ttts_cmd_arg_dict_item {
-    uint16_t index;              /* Index of the argument in the dictionary */
-    struct ttts_cmd_arg arg;     /* The actual argument */
+    uint16_t index;
+    struct ttts_cmd_arg arg;
 };
 
-/* Function to add an argument to the argument dictionary */
+/* Add an argument to the argument dictionary */
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
 
-/* Function to initialize the argument dictionary */
+/* Initialize the argument dictionary */
 struct ttts_cmd_arg_dict_item *args_dict_init(void);
 
-/* Function to load some predefined arguments into the dictionary */
+/* Load some predefined arguments into the dictionary */
 void ttts_load_args(struct ttts_cmd_arg_dict_item *args);
 
 /* Function to parse command-line arguments */

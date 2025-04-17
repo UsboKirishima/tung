@@ -5,10 +5,10 @@
 
 int main(int argc, char **argv) {
 	struct ttts_cmd_arg_dict_item *args = args_dict_init();
-	ttts_load_args(args);
+	args_load_all(args);
 	
 	printf("%s\n", "Welcome to Tung Tung Tung Sahur");
 
-	parse_full_buffer(argc, argv);
+	args_parse_full_buffer(argc, argv);
 	return 0;
 }

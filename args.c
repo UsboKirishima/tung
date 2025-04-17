@@ -49,7 +49,7 @@ void args_load_all(struct ttts_cmd_arg_dict_item *args) {
 
 /* This function exctract the value of a 
  * specified argument from the command buffer */
-char *extract_arg_value(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
+char *args_extract_value(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
 
 	if(!arg_tf.expects_value)
 		return NULL;

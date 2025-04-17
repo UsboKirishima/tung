@@ -38,6 +38,15 @@ void ttts_load_args(struct ttts_cmd_arg_dict_item *args);
 /* Function to parse command-line arguments */
 void parse_cmd_args(int argc, char **argv);
 
+/* Extract the value of a specific argument */
+char *extract_arg_value(int argc, char **argv, struct ttts_cmd_arg arg_tf);
+
+/* Check if an argument is contained */
+bool line_contains_arg(int argc, char **argv, struct ttts_cmd_arg arg_tf);
+
+/* Parse and find all the arguments in the command line buffer */
+void parse_full_buffer(int _argc, char **_argv);
+
 /* Function to print help message */
 void print_help(void);
 

@@ -8,6 +8,7 @@
 #include "cmds.h"
 #include "defs.h"
 #include "tung.h"
+#include "logs.h"
 
 /* prototypes */
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
@@ -100,7 +101,7 @@ static void _parse_atks(int _argc, char **_argv) {
 	struct attack_opts_t *atk = (struct attack_opts_t *)malloc(sizeof(struct attack_opts_t));
 	
 	if (atk == NULL) {
-		fprintf(stderr, "Error: Memory allocation failed for attack options.\n");
+		LOG_ERROR("Error: Memory allocation failed for attack options.");
 		exit(EXIT_FAILURE);
 	}
 
@@ -111,12 +112,12 @@ static void _parse_atks(int _argc, char **_argv) {
 	atk->atk_rate = 0;
 
        	if((atk->atk_type = args_extract_value(argcv, arg_attack)) == NULL) {
-		fprintf(stderr, "Error: Missing value in parameter `--attack`");
+		LOG_ERROR("Error: Missing value in parameter `--attack`");
 		exit(EXIT_FAILURE);
 	}
 	
 	if((atk->atk_target = args_extract_value(argcv, arg_target)) == NULL) {
-		fprintf(stderr, "Error: Missing value in paramater `--target` or `-t`\n");
+		LOG_ERROR("Error: Missing value in paramater `--target` or `-t`");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -125,7 +126,7 @@ static void _parse_atks(int _argc, char **_argv) {
 		atk->atk_port = (char *)malloc(strlen(DEFAULT_PORT) + 1);			
 
 		if (atk->atk_port == NULL) {
-			fprintf(stderr, "Error: Memory allocation failed for port.\n");
+			LOG_ERROR("Error: Memory allocation failed for port.");
 			exit(EXIT_FAILURE);
 		}
 		
@@ -133,7 +134,7 @@ static void _parse_atks(int _argc, char **_argv) {
 	}
 
 	if (strcmp(atk->atk_type, "udp") == 0) {
-	       
+		perform_udp_flood(atk);
 	}	
 }
 

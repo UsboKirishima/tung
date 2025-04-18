@@ -42,6 +42,10 @@ struct ttts_cmd_arg_dict_item *args_dict_init() {
 	return NULL;
 }
 
+void args_dict_free(struct ttts_cmd_arg_dict_item *args) {
+	free(args);
+}
+
 void args_load_all(struct ttts_cmd_arg_dict_item *args) {
 	args_dict_add(args, DICT_HELP_ARG, arg_help);
 	args_dict_add(args, DICT_VERSION_ARG, arg_version);
@@ -75,12 +79,12 @@ bool args_line_contains_arg(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
 
 void args_parse_full_buffer(int _argc, char **_argv) {
 
-#define argcv _argc, _argv
+	#define argcv _argc, _argv
 
 	/* Help argument */
 	if(args_line_contains_arg(argcv, arg_help)) 
 		return (void)printf("%s\n", "This is the help menu!");
-
+	
 	if(args_line_contains_arg(argcv, arg_version))
 		return (void)printf("%s %d.%d.%d %s\n", "Tung Tung Tung Sahur",
                         VERSION, "copyright 2025 333revenge");

@@ -10,5 +10,7 @@ int main(int argc, char **argv) {
 	printf("%s\n", "Welcome to Tung Tung Tung Sahur");
 
 	args_parse_full_buffer(argc, argv);
+
+	args_dict_free(args);
 	return 0;
 }

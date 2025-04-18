@@ -7,10 +7,13 @@
 #include "args.h"
 #include "cmds.h"
 #include "defs.h"
+#include "tung.h"
 
 /* prototypes */
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
+struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, const uint16_t index);
 struct ttts_cmd_arg_dict_item *args_dict_init(void);
+void args_dict_free(struct ttts_cmd_arg_dict_item *args);
 void args_load_all(struct ttts_cmd_arg_dict_item *args);
 void parse_cmd_args(int argc, char **argv);
 char *args_extract_value(int argc, char **argv, struct ttts_cmd_arg arg_tf);
@@ -21,14 +24,27 @@ void args_parse_full_buffer(int _argc, char **_argv);
  * to the argument dictionary (pointer of struct ttts_cmd_arg_dict_item)  */
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, 
 		const uint16_t index, struct ttts_cmd_arg arg) {
-	if(index < 0 || index >= MAX_ARGS_NUM)
+	if(index >= MAX_ARGS_NUM)
 		return -1;
 
 	dict[index].arg = arg;
 	dict[index].index = index;
 
 	return 1;
-}	
+}
+
+/* This function return a ttts_cmd_arg 
+ * from dictionary by giving the index  */
+struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, 
+		const uint16_t index) {
+
+	struct ttts_cmd_arg empty = {0};	
+	
+	if(index >= MAX_ARGS_NUM || args == NULL)
+		return empty;
+
+	return args[index].arg;
+}
 
 /* This function creates a new emtpy dictionary
  * of type `struct ttts_cmd_arg`  */
@@ -82,12 +98,12 @@ void args_parse_full_buffer(int _argc, char **_argv) {
 	#define argcv _argc, _argv
 
 	/* Help argument */
-	if(args_line_contains_arg(argcv, arg_help)) 
-		return (void)printf("%s\n", "This is the help menu!");
+	if(args_line_contains_arg(argcv, arg_help))
+		show_usage();	
+
 	
 	if(args_line_contains_arg(argcv, arg_version))
-		return (void)printf("%s %d.%d.%d %s\n", "Tung Tung Tung Sahur",
-                        VERSION, "copyright 2025 333revenge");
+		show_version();
 
 }
 

@@ -27,6 +27,7 @@ struct ttts_cmd_arg_dict_item {
 };
 
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
+struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, const uint16_t index);
 struct ttts_cmd_arg_dict_item *args_dict_init(void);
 void args_dict_free(struct ttts_cmd_arg_dict_item *args);
 void args_load_all(struct ttts_cmd_arg_dict_item *args);

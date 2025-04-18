@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include "args.h"
+#include "tung.h"
 
 #define DICT_EX_ARG 0
 #define DICT_HELP_ARG 1
@@ -60,7 +61,7 @@ struct ttts_cmd_arg arg_port = {
                 .description = "Target port (default: 80)",
                 .expects_value = true,
                 .value_name = "Port",
-                .default_value = "80",
+                .default_value = DEFAULT_PORT,
                 .is_required = true,
                 .is_repeatable = false
 };

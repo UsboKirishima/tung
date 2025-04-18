@@ -65,6 +65,7 @@ void args_dict_free(struct ttts_cmd_arg_dict_item *args) {
 void args_load_all(struct ttts_cmd_arg_dict_item *args) {
 	args_dict_add(args, DICT_HELP_ARG, arg_help);
 	args_dict_add(args, DICT_VERSION_ARG, arg_version);
+	args_dict_add(args, DICT_ATTACK_ARG, arg_attack);
 }
 
 /* This function exctract the value of a 
@@ -93,17 +94,52 @@ bool args_line_contains_arg(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
 	return false;
 }
 
-void args_parse_full_buffer(int _argc, char **_argv) {
+#define argcv _argc, _argv
 
-	#define argcv _argc, _argv
-
-	/* Help argument */
-	if(args_line_contains_arg(argcv, arg_help))
-		show_usage();	
-
+static void _parse_atks(int _argc, char **_argv) {
+	struct attack_opts_t *atk = (struct attack_opts_t *)malloc(sizeof(struct attack_opts_t));
 	
-	if(args_line_contains_arg(argcv, arg_version))
-		show_version();
+	if (atk == NULL) {
+		fprintf(stderr, "Error: Memory allocation failed for attack options.\n");
+		exit(EXIT_FAILURE);
+	}
 
+	atk->atk_type = NULL;
+	atk->atk_target = NULL;
+	atk->atk_port = NULL;
+	atk->atk_duration = 0;
+	atk->atk_rate = 0;
+
+       	if((atk->atk_type = args_extract_value(argcv, arg_attack)) == NULL) {
+		fprintf(stderr, "Error: Missing value in parameter `--attack`");
+		exit(EXIT_FAILURE);
+	}
+	
+	if((atk->atk_target = args_extract_value(argcv, arg_target)) == NULL) {
+		fprintf(stderr, "Error: Missing value in paramater `--target` or `-t`\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	
+	if((atk->atk_port = args_extract_value(argcv, arg_port)) == NULL) {
+		atk->atk_port = (char *)malloc(strlen(DEFAULT_PORT) + 1);			
+
+		if (atk->atk_port == NULL) {
+			fprintf(stderr, "Error: Memory allocation failed for port.\n");
+			exit(EXIT_FAILURE);
+		}
+		
+		strncpy(atk->atk_port, DEFAULT_PORT, strlen(DEFAULT_PORT) + 1);
+	}
+
+	if (strcmp(atk->atk_type, "udp") == 0) {
+	       
+	}	
+}
+
+void args_parse_full_buffer(int _argc, char **_argv) {
+	if(args_line_contains_arg(argcv, arg_help)) show_usage();	
+	if(args_line_contains_arg(argcv, arg_version)) show_version();
+	if(args_line_contains_arg(argcv, arg_attack)) _parse_atks(argcv);
 }
 

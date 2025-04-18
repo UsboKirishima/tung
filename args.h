@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_ARGS_NUM 4
-#define DICT_EX_ARG 0
+#define MAX_ARGS_NUM 10
 
 struct ttts_cmd_arg {
         char short_flag[3];         /* Short option like "-h" */

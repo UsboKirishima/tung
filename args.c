@@ -143,9 +143,15 @@ static void _parse_atks(int _argc, char **_argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	if (strcmp(atk->atk_type, "udp") == 0) {
-		perform_udp_flood(atk);
-	}	
+	if (strcmp(atk->atk_type, "udp") == 0) perform_udp_flood(atk);
+	else if(strcmp(atk->atk_type, "ampl") == 0) perform_udp_ampl(atk);
+	else if(strcmp(atk->atk_type, "fraggle") == 0) perform_udp_fraggle(atk);
+	else if(strcmp(atk->atk_type, "ald") == 0) perform_udp_app_layer_dos(atk);
+	else if(strcmp(atk->atk_type, "sockex") == 0) perform_udp_socket_exhaustion(atk);
+	else {
+		LOG_ERROR("Invalid Attack: %s", atk->atk_type);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void args_parse_full_buffer(int _argc, char **_argv) {

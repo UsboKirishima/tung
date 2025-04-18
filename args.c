@@ -133,6 +133,16 @@ static void _parse_atks(int _argc, char **_argv) {
 		strncpy(atk->atk_port, DEFAULT_PORT, strlen(DEFAULT_PORT) + 1);
 	}
 
+	if(args_extract_value(argcv, arg_duration) == NULL) {
+		LOG_ERROR("Error: Missing value or parameter `--duration` or `-d`");
+		exit(EXIT_FAILURE);
+	}
+
+	if((atk->atk_duration = atoi(args_extract_value(argcv, arg_duration))) == 0) {
+		LOG_ERROR("Error: Missing value in parameter `--duration` or `-d`");
+		exit(EXIT_FAILURE);
+	}
+
 	if (strcmp(atk->atk_type, "udp") == 0) {
 		perform_udp_flood(atk);
 	}	

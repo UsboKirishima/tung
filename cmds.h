@@ -65,3 +65,25 @@ struct ttts_cmd_arg arg_port = {
                 .is_required = true,
                 .is_repeatable = false
 };
+
+struct ttts_cmd_arg arg_duration = {
+                .short_flag = "-d",
+                .long_flag = "--duration",
+                .description = "Duration of the attack in seconds (e.g. 10)",
+                .expects_value = true,
+                .value_name = "Seconds",
+                .default_value = NULL,
+                .is_required = true,
+                .is_repeatable = false
+};
+
+struct ttts_cmd_arg arg_rate = {
+                .short_flag = "-r",
+                .long_flag = "--rate",
+                .description = "Packets per second (optional, default: max speed)",
+                .expects_value = true,
+                .value_name = "Seconds",
+                .default_value = NULL,
+                .is_required = false,
+                .is_repeatable = false
+};

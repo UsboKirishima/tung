@@ -17,9 +17,13 @@ struct attack_opts_t {
 
 void show_usage(void);
 void show_version(void);
+void show_attacks_list(void); 
 
 /* checksum  */
 uint16_t compute_checksum(const void *data, size_t len);
+
+/* IP Address */
+int validate_ip(const char *ip);
 
 /* UDP attacks */
 void perform_udp_flood(struct attack_opts_t *opts);

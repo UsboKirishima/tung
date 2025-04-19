@@ -119,8 +119,7 @@ static void _parse_atks(int _argc, char **_argv) {
 	if((atk->atk_target = args_extract_value(argcv, arg_target)) == NULL) {
 		LOG_ERROR("Error: Missing value in paramater `--target` or `-t`");
 		exit(EXIT_FAILURE);
-	}
-	
+	} 
 	
 	if((atk->atk_port = args_extract_value(argcv, arg_port)) == NULL) {
 		atk->atk_port = (char *)malloc(strlen(DEFAULT_PORT) + 1);			
@@ -132,12 +131,12 @@ static void _parse_atks(int _argc, char **_argv) {
 		
 		strncpy(atk->atk_port, DEFAULT_PORT, strlen(DEFAULT_PORT) + 1);
 	}
-
+	
 	if(args_extract_value(argcv, arg_duration) == NULL) {
 		LOG_ERROR("Error: Missing value or parameter `--duration` or `-d`");
 		exit(EXIT_FAILURE);
-	}
-
+	} 
+	
 	if((atk->atk_duration = atoi(args_extract_value(argcv, arg_duration))) == 0) {
 		LOG_ERROR("Error: Missing value in parameter `--duration` or `-d`");
 		exit(EXIT_FAILURE);
@@ -156,7 +155,8 @@ static void _parse_atks(int _argc, char **_argv) {
 
 void args_parse_full_buffer(int _argc, char **_argv) {
 	if(args_line_contains_arg(argcv, arg_help)) show_usage();	
-	if(args_line_contains_arg(argcv, arg_version)) show_version();
-	if(args_line_contains_arg(argcv, arg_attack)) _parse_atks(argcv);
+	else if(args_line_contains_arg(argcv, arg_version)) show_version();
+	else if(args_line_contains_arg(argcv, arg_list)) show_attacks_list();
+	else if(args_line_contains_arg(argcv, arg_attack)) _parse_atks(argcv);
 }
 

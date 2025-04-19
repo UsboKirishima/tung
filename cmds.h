@@ -33,6 +33,17 @@ struct ttts_cmd_arg arg_version = {
                 .is_repeatable = false
 };
 
+struct ttts_cmd_arg arg_list = {
+                .short_flag = "-l",
+                .long_flag = "--list-attacks",
+                .description = "Show available attacks",
+                .expects_value = false,
+                .value_name = NULL,
+                .default_value = NULL,
+                .is_required = false,
+                .is_repeatable = false
+};
+
 struct ttts_cmd_arg arg_attack = {
                 .short_flag = "-a",
                 .long_flag = "--attack",

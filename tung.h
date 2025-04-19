@@ -18,6 +18,9 @@ struct attack_opts_t {
 void show_usage(void);
 void show_version(void);
 
+/* checksum  */
+uint16_t compute_checksum(const void *data, size_t len);
+
 /* UDP attacks */
 void perform_udp_flood(struct attack_opts_t *opts);
 void perform_udp_ampl(struct attack_opts_t *opts);

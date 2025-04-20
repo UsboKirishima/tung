@@ -32,4 +32,7 @@ void perform_udp_fraggle(struct attack_opts_t *opts);
 void perform_udp_app_layer_dos(struct attack_opts_t *opts);
 void perform_udp_socket_exhaustion(struct attack_opts_t *opts);
 
+/* TCP Attacks  */
+void syn_flood(struct attack_opts_t *opts);
+
 #endif /* _TUNG_H */

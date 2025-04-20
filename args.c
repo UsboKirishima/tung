@@ -147,6 +147,7 @@ static void _parse_atks(int _argc, char **_argv) {
 	else if(strcmp(atk->atk_type, "fraggle") == 0) perform_udp_fraggle(atk);
 	else if(strcmp(atk->atk_type, "ald") == 0) perform_udp_app_layer_dos(atk);
 	else if(strcmp(atk->atk_type, "sockex") == 0) perform_udp_socket_exhaustion(atk);
+	else if(strcmp(atk->atk_type, "syn") == 0) syn_flood(atk);
 	else {
 		LOG_ERROR("Invalid Attack: %s", atk->atk_type);
 		exit(EXIT_FAILURE);

@@ -10,6 +10,9 @@
 #include "tung.h"
 #include "logs.h"
 
+/* cli options  */
+bool opt_verboose = false;
+
 /* prototypes */
 int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
 struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, const uint16_t index);
@@ -155,6 +158,8 @@ static void _parse_atks(int _argc, char **_argv) {
 }
 
 void args_parse_full_buffer(int _argc, char **_argv) {
+	if(args_line_contains_arg(argcv, arg_verboose)) opt_verboose = true;
+
 	if(args_line_contains_arg(argcv, arg_help)) show_usage();	
 	else if(args_line_contains_arg(argcv, arg_version)) show_version();
 	else if(args_line_contains_arg(argcv, arg_list)) show_attacks_list();

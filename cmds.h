@@ -98,3 +98,14 @@ struct ttts_cmd_arg arg_rate = {
                 .is_required = false,
                 .is_repeatable = false
 };
+
+struct ttts_cmd_arg arg_verboose = {
+                .short_flag = "-V",
+                .long_flag = "--verboose",
+                .description = "Print debug notes and logs",
+                .expects_value = false,
+                .value_name = NULL,
+                .default_value = NULL,
+                .is_required = false,
+                .is_repeatable = false
+};

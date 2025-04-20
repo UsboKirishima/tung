@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <unistd.h>
+
+#include "logs.h"
 
 #define DEFAULT_PORT "80"
 
@@ -15,9 +19,16 @@ struct attack_opts_t {
 	uint16_t atk_rate; /* packets per second  */
 };
 
+/* Globals CLI options  */
+extern bool opt_verboose;
+
 void show_usage(void);
 void show_version(void);
-void show_attacks_list(void); 
+void show_attacks_list(void);
+
+/* check root priviliges */
+int is_root();
+void check_root();
 
 /* checksum  */
 uint16_t compute_checksum(const void *data, size_t len);

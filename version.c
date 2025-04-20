@@ -4,7 +4,7 @@
 #include "defs.h"
 
 void show_version(void) {
-	printf("%s %d.%d.%d %s\n", "Tung Tung Tung Sahur",
-                        VERSION, "copyright 2025 333revenge");	
+	printf("Tung version n%d.%d.%d Copyright (c) 2025 Davide Usberti (333revenge)\n"
+			"This software is under Apache 2.0 LICENSE all rights reserved.\n", VERSION);	
 	exit(0);
 }

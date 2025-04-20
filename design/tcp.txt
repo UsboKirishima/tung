@@ -1,0 +1,36 @@
+Core Attack Functions
+	syn_flood() - TCP SYN flood attack implementation
+	ack_flood() - ACK flood with random sequence numbers
+	rst_flood() - RST packet flood
+	fin_flood() - FIN packet flood
+	psh_ack_flood() - PUSH+ACK flood
+	xmas_flood() - XMAS attack (FIN+PSH+URG flags set)
+	null_flood() - NULL flag attack (no flags set)
+
+Connection Handling
+	establish_connections() - Create multiple legitimate connections
+	partial_connections() - Start but don't complete handshakes
+	connection_exhaustion() - Max out connection tables
+
+Utility Functions
+	craft_tcp_packet() - Build custom TCP packets // this in tcp.c
+	done; random_ip() - Generate random source IPs for spoofing
+	done; random_port() - Generate random source ports
+	send_packet() - Low-level packet transmission // this in tcp.c or maybe in another future module?
+	set_tcp_flags() - Configure packet flags // this in tcp.c
+
+Monitoring/Reporting
+	monitor_target() - Check target availability
+	log_attack() - Record attack parameters/results
+	calculate_stats() - Track packets/sec, success rate
+
+Safety/Control
+	validate_target() - Confirm private IP range
+	rate_limit() - Control attack intensity
+	emergency_stop() - Immediate shutdown
+	duration_timer() - Set maximum runtime
+
+Advanced Techniques
+	slowloris() - Slowloris-style attack
+	tcp_fragment() - Fragmented packet attack
+	tcp_retransmit() - Retransmission flood

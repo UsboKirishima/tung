@@ -72,11 +72,12 @@ void perform_udp_flood(struct attack_opts_t *opts) {
                         usleep(1000000 / opts->atk_rate);
         }
 	
-	LOG_INFO("Attack ended after %d seconds, %d packets sent", opts->atk_duration, pk_counter);
+	LOG_INFO("Attack ended after %d seconds, %lu packets sent", opts->atk_duration, pk_counter);
         close(sockfd);
 }
 
 void perform_udp_ampl(struct attack_opts_t *opts) {
+	(void)opts;
         printf("UDP Amplification attack is not yet implemented.\n");
 }
 

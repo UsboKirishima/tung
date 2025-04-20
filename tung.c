@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "args.h"
 
 int main(int argc, char **argv) {
+	
+	srand(time(NULL) ^ getpid());
+	
 	struct ttts_cmd_arg_dict_item *args = args_dict_init();
 	args_load_all(args);
 	

@@ -21,6 +21,7 @@ void perform_udp_socket_exhaustion(struct attack_opts_t *opts);
 
 /* Internal helpers */
 static int create_udp_socket();
+static void print_attack_start(char *type_name, struct attack_opts_t *opts);
 static struct sockaddr_in build_target(const char *ip, const char *port);
 static int should_continue(time_t start, uint16_t duration);
 
@@ -38,6 +39,17 @@ static int create_udp_socket() {
         return sockfd;
 }
 
+static void print_attack_start(char *type_name, struct attack_opts_t *opts) {
+	 LOG_INFO("Started %s attack to %s for %d seconds %s", 
+                 type_name, opts->atk_target, opts->atk_duration, 
+                 opt_verboose ? "(detailed packet info will be shown)" : "");
+
+	 printf(COLOR_YELLOW "▸ Attack type:" COLOR_RESET " TCP %s Flood\n", type_name);
+         printf(COLOR_YELLOW "▸ Target:" COLOR_RESET " %s\n", opts->atk_target);
+         printf(COLOR_YELLOW "▸ Port:" COLOR_RESET " %s\n", opts->atk_port);
+         printf(COLOR_YELLOW "▸ Duration:" COLOR_RESET " %d seconds\n\n", opts->atk_duration);
+}
+
 static struct sockaddr_in build_target(const char *ip, const char *port) {
         struct sockaddr_in addr;
         memset(&addr, 0, sizeof(addr));
@@ -51,7 +63,8 @@ static struct sockaddr_in build_target(const char *ip, const char *port) {
 }
 
 void perform_udp_flood(struct attack_opts_t *opts) {
-	LOG_INFO("Starting UDP flood attack to %s", opts->atk_target);
+	print_attack_start("UDP Flood", opts);
+	
 	register uint64_t pk_counter = 0;
         int sockfd = create_udp_socket();
         struct sockaddr_in target = build_target(opts->atk_target, opts->atk_port);
@@ -82,7 +95,7 @@ void perform_udp_ampl(struct attack_opts_t *opts) {
 }
 
 void perform_udp_fraggle(struct attack_opts_t *opts) {
-	LOG_INFO("Starting UDP fraggle attack to %s", opts->atk_target);
+	print_attack_start("UDP Fraggle", opts);
         int sockfd = create_udp_socket();
 
         int enable = 1;
@@ -109,7 +122,7 @@ void perform_udp_fraggle(struct attack_opts_t *opts) {
 }
 
 void perform_udp_app_layer_dos(struct attack_opts_t *opts) {
-	LOG_INFO("Starting UDP App layer dos attack to %s", opts->atk_target);
+	print_attack_start("UDP App Layer DoS", opts);
         int sockfd = create_udp_socket();
         struct sockaddr_in target = build_target(opts->atk_target, opts->atk_port);
 
@@ -139,7 +152,7 @@ void perform_udp_app_layer_dos(struct attack_opts_t *opts) {
 }
 
 void perform_udp_socket_exhaustion(struct attack_opts_t *opts) {
-	LOG_INFO("Starting UDP Socket exhaustion attack to %s", opts->atk_target);
+	print_attack_start("UDP Socket Exhaustion", opts);
         struct sockaddr_in target = build_target(opts->atk_target, opts->atk_port);
 
         time_t start = time(NULL);

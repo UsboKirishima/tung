@@ -36,6 +36,10 @@ uint16_t compute_checksum(const void *data, size_t len);
 /* IP Address */
 int validate_ip(const char *ip);
 
+/* Target Utilities */
+int is_target_up(char *ip_addr, int port);
+int resolve_hostname(const char *hostname, char *ip_addr, size_t addr_len);
+
 /* UDP attacks */
 void perform_udp_flood(struct attack_opts_t *opts);
 void perform_udp_ampl(struct attack_opts_t *opts);
@@ -45,5 +49,11 @@ void perform_udp_socket_exhaustion(struct attack_opts_t *opts);
 
 /* TCP Attacks  */
 void syn_flood(struct attack_opts_t *opts);
+void ack_flood(struct attack_opts_t *opts);
+void rst_flood(struct attack_opts_t *opts);
+void fin_flood(struct attack_opts_t *opts);
+void psh_ack_flood(struct attack_opts_t *opts);
+void xmas_flood(struct attack_opts_t *opts);
+void null_flood(struct attack_opts_t *opts);
 
 #endif /* _TUNG_H */

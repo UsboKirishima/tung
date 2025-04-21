@@ -17,6 +17,9 @@ $(TARGET): $(OBJS)
 run: $(TARGET)
 	./$(TARGET)
 
+install: $(TARGET)
+	sudo cp $(TARGET) /usr/bin/$(TARGET)
+	
 clean:
 	rm -f $(OBJS) $(TARGET)
 

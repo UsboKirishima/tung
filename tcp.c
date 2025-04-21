@@ -269,7 +269,7 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
         
         LOG_INFO("Started TCP %s Flood attack to %s for %d seconds %s", 
                  type_name, opts->atk_target, opts->atk_duration, 
-                 opt_verboose ? "(detailed packet info will be shown)" : "");
+                 opt_verbose ? "(detailed packet info will be shown)" : "");
 
         printf(COLOR_YELLOW "▸ Attack type:" COLOR_RESET " TCP %s Flood\n", type_name);
         printf(COLOR_YELLOW "▸ Target:" COLOR_RESET " %s\n", opts->atk_target);
@@ -299,7 +299,7 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
                 
                 tcp->tcp_sum = calculate_tcp_checksum(ip);
 
-                if (opt_verboose) {
+                if (opt_verbose) {
                         print_packet_info(ip, tcp, packets_count, start);
                 }
                 

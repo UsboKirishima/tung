@@ -20,7 +20,11 @@ struct attack_opts_t {
 };
 
 /* Globals CLI options  */
-extern bool opt_verboose;
+extern bool opt_verbose; 
+extern char *opt_target; 
+extern uint16_t opt_port, 
+	 	opt_duration, 
+	 	opt_rate;
 
 void show_usage(void);
 void show_version(void);

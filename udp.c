@@ -42,7 +42,7 @@ static int create_udp_socket() {
 static void print_attack_start(char *type_name, struct attack_opts_t *opts) {
 	 LOG_INFO("Started %s attack to %s for %d seconds %s", 
                  type_name, opts->atk_target, opts->atk_duration, 
-                 opt_verboose ? "(detailed packet info will be shown)" : "");
+                 opt_verbose ? "(detailed packet info will be shown)" : "");
 
 	 printf(COLOR_YELLOW "▸ Attack type:" COLOR_RESET " TCP %s Flood\n", type_name);
          printf(COLOR_YELLOW "▸ Target:" COLOR_RESET " %s\n", opts->atk_target);

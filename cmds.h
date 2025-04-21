@@ -99,9 +99,9 @@ struct ttts_cmd_arg arg_rate = {
                 .is_repeatable = false
 };
 
-struct ttts_cmd_arg arg_verboose = {
+struct ttts_cmd_arg arg_verbose = {
                 .short_flag = "-V",
-                .long_flag = "--verboose",
+                .long_flag = "--verbose",
                 .description = "Print debug notes and logs",
                 .expects_value = false,
                 .value_name = NULL,

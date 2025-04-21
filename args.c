@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -11,66 +12,17 @@
 #include "logs.h"
 
 /* cli options  */
-bool opt_verboose = false;
+bool opt_verbose = false; 
+char *opt_target = NULL; 
+uint16_t opt_port = 0, 
+	 opt_duration = 0, 
+	 opt_rate = 0;
 
 /* prototypes */
-int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, const uint16_t index, struct ttts_cmd_arg arg);
-struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, const uint16_t index);
-struct ttts_cmd_arg_dict_item *args_dict_init(void);
-void args_dict_free(struct ttts_cmd_arg_dict_item *args);
-void args_load_all(struct ttts_cmd_arg_dict_item *args);
 void parse_cmd_args(int argc, char **argv);
 char *args_extract_value(int argc, char **argv, struct ttts_cmd_arg arg_tf);
 bool args_line_contains_arg(int argc, char **argv, struct ttts_cmd_arg arg_tf);
 void args_parse_full_buffer(int _argc, char **_argv);
-
-/* This function add an argument (struct ttts_cmd_arg) 
- * to the argument dictionary (pointer of struct ttts_cmd_arg_dict_item)  */
-int8_t args_dict_add(struct ttts_cmd_arg_dict_item *dict, 
-		const uint16_t index, struct ttts_cmd_arg arg) {
-	if(index >= MAX_ARGS_NUM)
-		return -1;
-
-	dict[index].arg = arg;
-	dict[index].index = index;
-
-	return 1;
-}
-
-/* This function return a ttts_cmd_arg 
- * from dictionary by giving the index  */
-struct ttts_cmd_arg args_dict_get(struct ttts_cmd_arg_dict_item *args, 
-		const uint16_t index) {
-
-	struct ttts_cmd_arg empty = {0};	
-	
-	if(index >= MAX_ARGS_NUM || args == NULL)
-		return empty;
-
-	return args[index].arg;
-}
-
-/* This function creates a new emtpy dictionary
- * of type `struct ttts_cmd_arg`  */
-struct ttts_cmd_arg_dict_item *args_dict_init() {
-	struct ttts_cmd_arg_dict_item *args = 
-		(struct ttts_cmd_arg_dict_item *)malloc(sizeof(struct ttts_cmd_arg_dict_item) * MAX_ARGS_NUM);
-	
-	if(args != NULL)
-		return args;
-
-	return NULL;
-}
-
-void args_dict_free(struct ttts_cmd_arg_dict_item *args) {
-	free(args);
-}
-
-void args_load_all(struct ttts_cmd_arg_dict_item *args) {
-	args_dict_add(args, DICT_HELP_ARG, arg_help);
-	args_dict_add(args, DICT_VERSION_ARG, arg_version);
-	args_dict_add(args, DICT_ATTACK_ARG, arg_attack);
-}
 
 /* This function exctract the value of a 
  * specified argument from the command buffer */
@@ -80,8 +32,12 @@ char *args_extract_value(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
 		return NULL;
 	
 	for(int arg_i = 0; arg_i < argc; arg_i++) {
-		if(strcmp(argv[arg_i], arg_tf.short_flag) == 0 || strcmp(argv[arg_i], arg_tf.long_flag) == 0)
-			return argv[arg_i + 1];
+		if(strcmp(argv[arg_i], arg_tf.short_flag) == 0 || strcmp(argv[arg_i], arg_tf.long_flag) == 0) {
+			if (arg_i + 1 < argc)
+				return argv[arg_i + 1];
+			
+			return NULL;
+		}
 	}
 
 	return NULL;
@@ -108,53 +64,51 @@ static void _parse_atks(int _argc, char **_argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	char port[6];
+	int cp_port = snprintf(port, sizeof(port), "%u", opt_port);
+
+	if(cp_port < 0 && cp_port >= (int)sizeof(port)) {
+		LOG_ERROR("Failed to parse port (from integer to string)");
+		free(atk);
+		exit(EXIT_FAILURE);
+	}
+
 	atk->atk_type = NULL;
-	atk->atk_target = NULL;
-	atk->atk_port = NULL;
-	atk->atk_duration = 0;
-	atk->atk_rate = 0;
+	atk->atk_target = opt_target;
+	atk->atk_port = strdup(port);
+	atk->atk_duration = opt_duration;
+	atk->atk_rate = opt_rate;
+
+	if (atk->atk_port == NULL) {
+		LOG_ERROR("Error: Memory allocation failed for port string");
+		free(atk);
+		exit(EXIT_FAILURE);
+	}
 
        	if((atk->atk_type = args_extract_value(argcv, arg_attack)) == NULL) {
 		LOG_ERROR("Error: Missing value in parameter `--attack`");
-		exit(EXIT_FAILURE);
-	}
-	
-	if((atk->atk_target = args_extract_value(argcv, arg_target)) == NULL) {
-		LOG_ERROR("Error: Missing value in paramater `--target` or `-t`");
-		exit(EXIT_FAILURE);
-	} 
-	
-	if((atk->atk_port = args_extract_value(argcv, arg_port)) == NULL) {
-		atk->atk_port = (char *)malloc(strlen(DEFAULT_PORT) + 1);			
-
-		if (atk->atk_port == NULL) {
-			LOG_ERROR("Error: Memory allocation failed for port.");
-			exit(EXIT_FAILURE);
-		}
-		
-		strncpy(atk->atk_port, DEFAULT_PORT, strlen(DEFAULT_PORT) + 1);
-	}
-	
-	if(args_extract_value(argcv, arg_duration) == NULL) {
-		LOG_ERROR("Error: Missing value or parameter `--duration` or `-d`");
-		exit(EXIT_FAILURE);
-	} 
-	
-	if((atk->atk_duration = atoi(args_extract_value(argcv, arg_duration))) == 0) {
-		LOG_ERROR("Error: Missing value in parameter `--duration` or `-d`");
+		free(atk->atk_port);
+		free(atk);
 		exit(EXIT_FAILURE);
 	}
 
 	/* check if ip addr is valid  */
 	if(!validate_ip(atk->atk_target)) {
 		LOG_ERROR("Invalid Ip Address: %s", atk->atk_target);
+		free(atk->atk_port);
+		free(atk);
 		exit(EXIT_FAILURE);
 	}
 
 	/* check if target is up  */
 	if(!is_target_up(atk->atk_target, atoi(atk->atk_port))) {
 		LOG_ERROR("Failed to connect to %s (host is down)", atk->atk_target);
+		free(atk->atk_port);
+		free(atk);
+		exit(EXIT_FAILURE);
 	}
+
+	bool attack_executed = true;
 
 	/* TODO: Add target_addr resolve to ip addr */
 
@@ -172,16 +126,53 @@ static void _parse_atks(int _argc, char **_argv) {
 	else if(strcmp(atk->atk_type, "null") == 0) null_flood(atk);
 	else {
 		LOG_ERROR("Invalid Attack: %s", atk->atk_type);
+		attack_executed = false;
+		free(atk->atk_port);
+		free(atk);
 		exit(EXIT_FAILURE);
+	}
+
+	if(attack_executed) {
+		free(atk->atk_port);
+		free(atk);
 	}
 }
 
+#define __CONTAINS(arg) args_line_contains_arg(argcv, arg)
+#define __EXTRACT(arg) args_extract_value(argcv, arg)
+
 void args_parse_full_buffer(int _argc, char **_argv) {
-	if(args_line_contains_arg(argcv, arg_verboose)) opt_verboose = true;
+	if(__CONTAINS(arg_verbose)) opt_verbose = true;
+	
+	if(__CONTAINS(arg_attack)) {
+		if((opt_target = __EXTRACT(arg_target)) == NULL) {
+			LOG_ERROR("Error: Missing value in paramater `--target` or `-t`");
+			exit(EXIT_FAILURE);
+		}
+		       
+		char *port_str = __EXTRACT(arg_port);
+		if(port_str == NULL || (opt_port = (uint16_t)atoi(port_str)) == 0) {
+			LOG_ERROR("Error: Missing or invalid value in param --port");
+			exit(EXIT_FAILURE);
+		}
+		
+		char *duration_str = __EXTRACT(arg_duration);
+		if(duration_str == NULL || (opt_duration = (uint16_t)atoi(duration_str)) == 0) {
+			opt_duration = UINT16_MAX;
+		}
+	
+		char *rate_str = __EXTRACT(arg_rate);
+		opt_rate = rate_str ? (uint16_t)atoi(rate_str) : 0;
+	}
+	
 
 	if(args_line_contains_arg(argcv, arg_help)) show_usage();	
 	else if(args_line_contains_arg(argcv, arg_version)) show_version();
 	else if(args_line_contains_arg(argcv, arg_list)) show_attacks_list();
 	else if(args_line_contains_arg(argcv, arg_attack)) _parse_atks(argcv);
+	else {
+		LOG_ERROR("No valid command specified. Use --help for usage information.");
+		exit(EXIT_FAILURE);
+	}
 }
 

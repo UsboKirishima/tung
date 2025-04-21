@@ -11,7 +11,7 @@ void show_usage(void) {
     		"  -t  --target <ip>        Target IP address (e.g. 192.168.1.100)\n"
     		"  -p  --port <port>        Target port (default: 80)\n"
     		"  -d  --duration <sec>     Duration of the attack in seconds (e.g. 10)\n"
-		"  -V  --verboose	   Print debug and notes\n"
+		"  -V  --verbose	   Print debug and notes\n"
     		"  -r  --rate <pps>         Packets per second (optional, default: max speed)\n\n"
     		"  -l  --list-attacks       Show available attacks\n"
     		"  -5  --dry-run            Show what would be done, but don’t actually send anything\n\n"

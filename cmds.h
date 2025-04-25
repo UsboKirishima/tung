@@ -109,3 +109,14 @@ struct ttts_cmd_arg arg_verbose = {
                 .is_required = false,
                 .is_repeatable = false
 };
+
+struct ttts_cmd_arg arg_dryrun = {
+                .short_flag = "-5",
+                .long_flag = "--dry-run",
+                .description = "Show what would be done, but don’t actually send anything",
+                .expects_value = false,
+                .value_name = NULL,
+                .default_value = NULL,
+                .is_required = false,
+                .is_repeatable = false
+};

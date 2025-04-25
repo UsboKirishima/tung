@@ -20,7 +20,8 @@ struct attack_opts_t {
 };
 
 /* Globals CLI options  */
-extern bool opt_verbose; 
+extern bool opt_verbose,
+       opt_dryrun; 
 
 extern char *opt_target;
 

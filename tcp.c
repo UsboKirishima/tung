@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -311,6 +312,9 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
                 }
 
                 packets_count++;
+
+		if(opts->atk_rate > 0) 
+			usleep(1000000 / opts->atk_rate);
         }
         
         LOG_INFO("TCP %s Flood ended (packets sent: %lu)", type_name, packets_count);

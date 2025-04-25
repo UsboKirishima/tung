@@ -12,7 +12,8 @@
 #include "logs.h"
 
 /* cli options  */
-bool opt_verbose = false; 
+bool opt_verbose = false,
+     opt_dryrun = false; 
 char *opt_target = NULL; 
 uint16_t opt_port = 0, 
 	 opt_duration = 0, 
@@ -143,6 +144,7 @@ static void _parse_atks(int _argc, char **_argv) {
 
 void args_parse_full_buffer(int _argc, char **_argv) {
 	if(__CONTAINS(arg_verbose)) opt_verbose = true;
+	if(__CONTAINS(arg_dryrun)) opt_dryrun = true;
 	
 	if(__CONTAINS(arg_attack)) {
 		if((opt_target = __EXTRACT(arg_target)) == NULL) {

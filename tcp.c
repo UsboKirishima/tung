@@ -17,6 +17,8 @@
 
 #define PACKET_LEN 1024
 
+/* TODO: Handle Ctrl+C signal and cleanup stuff */
+
 struct ethheader {
         uint8_t  ether_dhost[6]; /* Destination host address */
         uint8_t  ether_shost[6]; /* Source host address */

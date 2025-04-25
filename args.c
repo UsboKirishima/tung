@@ -166,9 +166,9 @@ void args_parse_full_buffer(int _argc, char **_argv) {
 	}
 	
 
-	if(args_line_contains_arg(argcv, arg_help)) show_usage();	
+	if(args_line_contains_arg(argcv, arg_help)) show_usage(_argv);
 	else if(args_line_contains_arg(argcv, arg_version)) show_version();
-	else if(args_line_contains_arg(argcv, arg_list)) show_attacks_list();
+	else if(args_line_contains_arg(argcv, arg_list)) show_attacks_list(_argv);
 	else if(args_line_contains_arg(argcv, arg_attack)) _parse_atks(argcv);
 	else {
 		LOG_ERROR("No valid command specified. Use --help for usage information.");

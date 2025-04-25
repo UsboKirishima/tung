@@ -21,14 +21,16 @@ struct attack_opts_t {
 
 /* Globals CLI options  */
 extern bool opt_verbose; 
-extern char *opt_target; 
+
+extern char *opt_target;
+
 extern uint16_t opt_port, 
 	 	opt_duration, 
 	 	opt_rate;
 
-void show_usage(void);
+void show_usage(char **argv);
 void show_version(void);
-void show_attacks_list(void);
+void show_attacks_list(char **argv);
 
 /* check root priviliges */
 int is_root();

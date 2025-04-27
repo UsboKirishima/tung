@@ -119,17 +119,17 @@ static int global_sock = -1;
 static const char *global_typename = NULL;
 static uint64_t global_packets_count = 0;
 
-void handle_sigint(int sig) {
-    (void)sig; 
+void handle_tcp_sigint(int sig) {
+        (void)sig; 
     
-    if (global_sock != -1) {
-        close(global_sock);
-    }
+        if (global_sock != -1) {
+                close(global_sock);
+        }
 
-    printf("\n");
-    LOG_INFO("TCP %s Flood interrupted (packets sent: %lu)", 
-             global_typename ? global_typename : "UNKNOWN", global_packets_count);
-    exit(0);
+        printf("\n");
+        LOG_INFO("TCP %s Flood interrupted (packets sent: %lu)", 
+                global_typename ? global_typename : "UNKNOWN", global_packets_count);
+        exit(0);
 }
 
 static int create_raw_socket(void) {
@@ -313,7 +313,7 @@ static void perform_flood_attack(struct attack_opts_t *opts, flood_type_t type) 
 	global_sock = sock;
 	global_typename = type_name;
 	global_packets_count = 0; 
-	signal(SIGINT, handle_sigint);	
+	signal(SIGINT, handle_tcp_sigint);	
         
 	while (should_continue(start, opts->atk_duration)) {
                 memset(buffer, 0, PACKET_LEN);

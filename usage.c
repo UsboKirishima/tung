@@ -15,6 +15,10 @@ void show_usage(char **argv) {
     		"  -r  --rate <pps>         Packets per second (optional, default: max speed)\n\n"
     		"  -l  --list-attacks       Show available attacks\n"
     		"  -5  --dry-run            Show what would be done, but don’t actually send anything\n\n"
+		"  -8  --scan <range>       Port scanner mode\n"
+		"                             Example: %s --scan 30-40,60-70 --target 34.54.65.34\n"
+		"                             Example: %s --scan all --target 34.54.65.34\n"
+		"                             Example: %s --scan common --target 34.54.65.34\n\n"
     		"  -h  --help               Show this help message\n"
     		"  -v  --version            Show version information\n\n"
     		"Examples:\n"
@@ -22,7 +26,8 @@ void show_usage(char **argv) {
     		"  %s --attack slowloris --target 10.0.0.5 --port 8080 --duration 1800\n\n"
     		"Warning:\n"
     		"  This tool is meant for local lab testing only.\n"
-    		"  Do NOT use on networks you do not own or have permission to test.\n", argv[0], argv[0]);
+    		"  Do NOT use on networks you do not own or have permission to test.\n", 
+		argv[0], argv[0], argv[0], argv[0], argv[0]);
 	exit(EXIT_SUCCESS);
 }
 

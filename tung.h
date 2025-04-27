@@ -23,7 +23,9 @@ struct attack_opts_t {
 extern bool opt_verbose,
        opt_dryrun; 
 
-extern char *opt_target;
+extern char *opt_target, 
+       *opt_scan,
+       *opt_attack;
 
 extern uint16_t opt_port, 
 	 	opt_duration, 

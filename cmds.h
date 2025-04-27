@@ -120,3 +120,15 @@ struct ttts_cmd_arg arg_dryrun = {
                 .is_required = false,
                 .is_repeatable = false
 };
+
+
+struct ttts_cmd_arg arg_scan = {
+		.short_flag = "-8",
+                .long_flag = "--scan",
+		.description = "Port scanner mode",
+		.expects_value = true,
+		.value_name = "Port(s)",
+                .default_value = NULL,
+                .is_required = true,
+                .is_repeatable = false
+};

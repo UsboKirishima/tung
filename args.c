@@ -10,11 +10,14 @@
 #include "defs.h"
 #include "tung.h"
 #include "logs.h"
+#include "scan.h"
 
 /* cli options  */
 bool opt_verbose = false,
      opt_dryrun = false; 
-char *opt_target = NULL; 
+char *opt_target = NULL, 
+     *opt_scan = NULL, 
+     *opt_attack = NULL; 
 uint16_t opt_port = 0, 
 	 opt_duration = 0, 
 	 opt_rate = 0;
@@ -146,7 +149,15 @@ void args_parse_full_buffer(int _argc, char **_argv) {
 	if(__CONTAINS(arg_verbose)) opt_verbose = true;
 	if(__CONTAINS(arg_dryrun)) opt_dryrun = true;
 	
-	if(__CONTAINS(arg_attack)) {
+	opt_attack = __EXTRACT(arg_attack);
+	opt_scan = __EXTRACT(arg_scan);
+	opt_target = __EXTRACT(arg_target);
+
+	if(__CONTAINS(arg_scan)) {
+		scan_init();
+		printf("let's go Type: %s Ports: %s Target: %s", opt_attack, opt_scan, opt_target);
+		exit(EXIT_SUCCESS);
+	} else if(__CONTAINS(arg_attack)) {
 		if((opt_target = __EXTRACT(arg_target)) == NULL) {
 			LOG_ERROR("Error: Missing value in paramater `--target` or `-t`");
 			exit(EXIT_FAILURE);

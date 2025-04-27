@@ -29,7 +29,6 @@
 #define LOG_INFO(msg, ...)                                                         \
         do                                                                         \
         {                                                                          \
-                LOG_TIMESTAMP();                                                   \
                 printf(COLOR_GREEN "[INFO] " COLOR_RESET msg "\n", ##__VA_ARGS__); \
         } while (0)
 

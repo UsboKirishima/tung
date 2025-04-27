@@ -132,3 +132,25 @@ struct ttts_cmd_arg arg_scan = {
                 .is_required = true,
                 .is_repeatable = false
 };
+
+struct ttts_cmd_arg arg_srcaddr = {
+		.short_flag = "",
+                .long_flag = "--srcaddr",
+		.description = "Source address (leave blank = random)",
+		.expects_value = true,
+		.value_name = "Addr",
+                .default_value = NULL,
+                .is_required = true,
+                .is_repeatable = false
+};
+
+struct ttts_cmd_arg arg_srcport = {
+		.short_flag = "",
+                .long_flag = "--srcport",
+		.description = "Source port (leave blank = random)",
+		.expects_value = true,
+		.value_name = "Port",
+                .default_value = NULL,
+                .is_required = true,
+                .is_repeatable = false
+};

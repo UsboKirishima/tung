@@ -11,16 +11,19 @@
 #include "tung.h"
 #include "logs.h"
 #include "scan.h"
+#include "utils.h"
 
 /* cli options  */
 bool opt_verbose = false,
      opt_dryrun = false; 
 char *opt_target = NULL, 
      *opt_scan = NULL, 
-     *opt_attack = NULL; 
+     *opt_attack = NULL,
+     *opt_srcaddr; 
 uint16_t opt_port = 0, 
 	 opt_duration = 0, 
-	 opt_rate = 0;
+	 opt_rate = 0,
+	 opt_srcport = 0;
 
 /* prototypes */
 void parse_cmd_args(int argc, char **argv);
@@ -56,6 +59,18 @@ bool args_line_contains_arg(int argc, char **argv, struct ttts_cmd_arg arg_tf) {
 	}
 
 	return false;
+}
+
+int str_port_to_int(char *port) {
+	if(!strisnum(port))
+		return 0;
+
+	int portint = strtol(port, NULL, 0);
+
+	if(portint <= 0 || portint >= 65535) 
+		return 0;
+
+	return portint;
 }
 
 #define argcv _argc, _argv
@@ -152,6 +167,18 @@ void args_parse_full_buffer(int _argc, char **_argv) {
 	opt_attack = __EXTRACT(arg_attack);
 	opt_scan = __EXTRACT(arg_scan);
 	opt_target = __EXTRACT(arg_target);
+	opt_srcaddr = __EXTRACT(arg_srcaddr);
+	opt_srcport = str_port_to_int(__EXTRACT(arg_srcport));
+
+	if(__EXTRACT(arg_srcport) != NULL && !opt_srcport) {
+		LOG_ERROR("Invalid srcport provided, out of range 1-65335 or Not a Number");
+		goto fatal;
+	}
+
+	if(opt_srcaddr != NULL && !validate_ip(opt_srcaddr)) {
+		LOG_ERROR("Invalid srcaddr provided, invalid ip address");
+		goto fatal;
+	}
 
 	if(__CONTAINS(arg_scan)) {
 		scan_init();
@@ -187,5 +214,8 @@ void args_parse_full_buffer(int _argc, char **_argv) {
 		LOG_ERROR("No valid command specified. Use --help for usage information.");
 		exit(EXIT_FAILURE);
 	}
+
+fatal:
+	exit(EXIT_FAILURE);
 }
 

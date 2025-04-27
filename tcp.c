@@ -205,14 +205,17 @@ static void setup_ip_header(struct ipheader *ip, const char *target, uint16_t pa
         ip->iph_ver = 4;                           /* IPv4 */
         ip->iph_ihl = 5;                           /* Standard IP header length */
         ip->iph_ttl = 50;                          /* Time to live */
-        ip->iph_sourceip.s_addr = rand() ^ (rand() << 15) ^ (rand() << 30); /* Random source IP */
+        ip->iph_sourceip.s_addr = opt_srcaddr == NULL ? /* Source address | Random */
+		htonl(rand() ^ (rand() << 15) ^ (rand() << 30)) 
+		: inet_addr(opt_srcaddr);
         ip->iph_destip.s_addr = inet_addr(target);
         ip->iph_protocol = IPPROTO_TCP;
         ip->iph_len = htons(packet_size);
 }
 
 static void setup_tcp_header(struct tcpheader *tcp, const char *port, uint8_t flags) {
-        tcp->tcp_sport = rand();                   /* Random source port */
+        tcp->tcp_sport = !opt_srcport ? rand() 
+		: opt_srcport;                     /* Source port | Random */
         tcp->tcp_dport = htons(atoi(port));
         tcp->tcp_seq = rand();                     /* Random sequence number */
         tcp->tcp_offx2 = 0x50;                     /* Data offset: 5 words (standard header) */

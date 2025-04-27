@@ -25,11 +25,13 @@ extern bool opt_verbose,
 
 extern char *opt_target, 
        *opt_scan,
-       *opt_attack;
+       *opt_attack,
+       *opt_srcaddr;
 
 extern uint16_t opt_port, 
 	 	opt_duration, 
-	 	opt_rate;
+	 	opt_rate,
+		opt_srcport;
 
 void show_usage(char **argv);
 void show_version(void);
